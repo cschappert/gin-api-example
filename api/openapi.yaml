@@ -1,0 +1,256 @@
+openapi: 3.0.2
+info:
+  title: Gin API Example
+  description: An example API
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Gin API Example v1 (localhost)
+  - url: https://dev.example.com
+    description: Gin API Example v1 (development)
+
+paths:
+  /accounts/{accountId}:
+    get:
+      summary: Returns an account by Id.
+      operationId: getAccount
+      parameters:
+        - $ref: "#/components/parameters/AccountId"
+      responses:
+        "200":
+          description: An account object.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Account"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+    delete:
+      summary: Deletes an account by Id.
+      operationId: deleteAccount
+      parameters:
+        - $ref: "#/components/parameters/AccountId"
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContentSuccess"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+
+  /accounts:
+    get:
+      summary: Returns a list of accounts.
+      operationId: listAccounts
+      responses:
+        "200":
+          description: A list of Account objects.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Account"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        default:
+          description: Unexpected error
+    post:
+      summary: Create an account.
+      operationId: createAccount
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Account"
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContentSuccess"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+  /teams/{teamId}:
+    get:
+      summary: Returns a team by Id.
+      operationId: getTeam
+      parameters:
+        - $ref: "#/components/parameters/TeamId"
+      responses:
+        "200":
+          description: A team object.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Team"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+    delete:
+      summary: Deletes a team by Id.
+      operationId: deleteTeam
+      parameters:
+        - $ref: "#/components/parameters/TeamId"
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContentSuccess"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+  /teams:
+    get:
+      summary: Returns a list of teams.
+      operationId: listTeams
+      responses:
+        "200":
+          description: A list of team objects.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Team"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        default:
+          description: Unexpected error
+    post:
+      summary: Create a team.
+      operationId: createTeam
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Team"
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContentSuccess"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+
+components:
+  schemas:
+    Account:
+      properties:
+        id:
+          type: integer
+          example: 4
+        name:
+          type: string
+          example: Alice Smith
+        email:
+          type: string
+          example: alice@example.com
+      required:
+        - name
+        - email
+    Team:
+      properties:
+        id:
+          type: integer
+          example: 4
+        name:
+          type: string
+          example: The Jets
+        owner_email:
+          type: string
+          example: ceo@example.com
+      required:
+        - name
+        - owner_email
+
+  parameters:
+    AccountId:
+      name: accountId
+      in: path
+      required: true
+      description: The ID of the account.
+      schema:
+        type: integer
+        minimum: 1
+    TeamId:
+      name: teamId
+      in: path
+      required: true
+      description: The ID of the team.
+      schema:
+        type: integer
+        minimum: 1
+
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid. Client must authenticate.
+    ForbiddenError:
+      description: Client is not authorized to access this resource.
+    NotFoundError:
+      description: The requested resource can not be found.
+    BadRequestError:
+      description: The request is invalid.
+    UnexpectedError:
+      description: An unexpected error occured.
+    NoContentSuccess:
+      description: Success (No content returned). # for successful create, update, delete that does not return entity.
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: [] # applied globally
