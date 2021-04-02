@@ -16,7 +16,7 @@ package main
 
 import (
 	"github.com/cschappert/gin-api-example/pkg/http"
-	"github.com/cschappert/gin-api-example/pkg/mysql"
+	"github.com/cschappert/gin-api-example/pkg/storage/mysql"
 	"github.com/gin-gonic/gin"
 )
 
@@ -28,5 +28,5 @@ func main() {
 	r := gin.Default()
 	http.NewHandler(r, as)
 
-	r.Run()
+	_ = r.Run()
 }

@@ -23,6 +23,27 @@ type Handler struct {
 	AccountService api.AccountService
 }
 
+func NewHandler(g *gin.Engine, as api.AccountService) {
+	h := &Handler{as}
+
+	v1 := g.Group("/api/v1")
+
+	accounts := v1.Group("/accounts")
+	{
+		accounts.GET("", h.ListAccounts)
+		accounts.GET("/:id", h.GetAccount)
+		accounts.PUT("", h.CreateAccount)
+		accounts.DELETE("", h.DeleteAccount)
+	}
+
+	teams := v1.Group("/teams")
+	{
+		teams.GET("", h.ListTeams)
+		teams.GET("/:id", h.GetTeam)
+		teams.PUT("", h.CreateTeam)
+		teams.DELETE("", h.DeleteTeam)
+	}
+}
 func (h *Handler) ListAccounts(c *gin.Context) {
 	c.String(200, "Success")
 }
@@ -34,16 +55,30 @@ func (h *Handler) GetAccount(c *gin.Context) {
 	c.JSON(200, res)
 }
 
-func NewHandler(g *gin.Engine, as api.AccountService) {
-	h := &Handler{as}
+func (h *Handler) CreateAccount(c *gin.Context) {
+	c.String(204, "Success")
+}
 
-	v1 := g.Group("/api/v1")
+func (h *Handler) DeleteAccount(c *gin.Context) {
+	c.JSON(204, "Success")
+}
 
-	accounts := v1.Group("/accounts")
-	{
-		accounts.GET("", h.ListAccounts)
-		accounts.GET("/:id", h.GetAccount)
-		//accounts.PUT("", h.CreateAccount)
-		//accounts.DELETE("", h.DeleteAccount)
+func (h *Handler) ListTeams(c *gin.Context) {
+	c.String(200, "Success")
+}
+
+func (h *Handler) GetTeam(c *gin.Context) {
+	res := api.Team{
+		Name:       "Bob",
+		OwnerEmail: "bob@example.com",
 	}
+	c.JSON(200, res)
+}
+
+func (h *Handler) CreateTeam(c *gin.Context) {
+	c.String(204, "Success")
+}
+
+func (h *Handler) DeleteTeam(c *gin.Context) {
+	c.JSON(204, "Success")
 }
