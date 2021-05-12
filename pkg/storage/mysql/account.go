@@ -21,12 +21,13 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-// UserService represents a MySql implementation of api.AccountService.
+// AccountService represents a MySql implementation of api.AccountService.
 type AccountService struct {
 	DB *sql.DB
 }
 
 func (s *AccountService) GetAccount(id int) (*api.Account, error) {
+	// TODO: query DB, convert result to api.Account and return
 	return &api.Account{}, nil
 }
 
