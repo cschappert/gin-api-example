@@ -16,7 +16,6 @@ package mysql
 
 import (
 	api "github.com/cschappert/gin-api-example/pkg"
-	_ "github.com/go-sql-driver/mysql"
 	"gorm.io/gorm"
 )
 
