@@ -1,4 +1,4 @@
-// Copyright 2021 Chris Schappert
+// Copyright 2022 Chris Schappert
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,38 +15,22 @@
 package mysql
 
 import (
-	"database/sql"
-	"fmt"
 	"log"
-	"time"
 
-	_ "github.com/go-sql-driver/mysql"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
-var _db *sql.DB
+var _db *gorm.DB
 
-func Open() *sql.DB {
+func Open() *gorm.DB {
 	if _db == nil {
-		host := "127.0.0.1"
-		port := "13306"
-		user := "user"
-		password := "password"
-		database := "database"
-		maxLifeTime := 60
 
-		url := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true&charset=utf8mb4", user, password, host, port, database)
-
-		db, err := sql.Open("mysql", url)
+		// refer https://github.com/go-sql-driver/mysql#dsn-data-source-name for details
+		dsn := "root:pw@tcp(127.0.0.1:3306)/db?charset=utf8mb4&parseTime=True&loc=Local"
+		db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 		if err != nil {
-			log.Fatal("DB ERROR: ", err)
-		}
-
-		db.SetMaxIdleConns(100)
-		db.SetConnMaxLifetime(time.Duration(maxLifeTime) * time.Second)
-
-		err = db.Ping()
-		if err != nil {
-			log.Fatal("DB ERROR: ", err)
+			log.Fatal("failed to connect to database: ", err)
 		}
 
 		_db = db

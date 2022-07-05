@@ -1,4 +1,4 @@
-// Copyright 2021 Chris Schappert
+// Copyright 2022 Chris Schappert
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,9 @@
 package http
 
 import (
+	"net/http"
+	"strconv"
+
 	api "github.com/cschappert/gin-api-example/pkg"
 	"github.com/gin-gonic/gin"
 )
@@ -33,9 +36,10 @@ func NewHandler(g *gin.Engine, as api.AccountService) {
 		accounts.GET("", h.ListAccounts)
 		accounts.GET("/:id", h.GetAccount)
 		accounts.PUT("", h.CreateAccount)
-		accounts.DELETE("", h.DeleteAccount)
+		accounts.DELETE("/:id", h.DeleteAccount)
 	}
 
+	/* TODO
 	teams := v1.Group("/teams")
 	{
 		teams.GET("", h.ListTeams)
@@ -43,26 +47,69 @@ func NewHandler(g *gin.Engine, as api.AccountService) {
 		teams.PUT("", h.CreateTeam)
 		teams.DELETE("", h.DeleteTeam)
 	}
+	*/
 }
+
 func (h *Handler) ListAccounts(c *gin.Context) {
-	c.String(200, "Success")
+	res, err := h.AccountService.ListAccounts()
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	c.JSON(http.StatusOK, res)
 }
 
 func (h *Handler) GetAccount(c *gin.Context) {
-	res := api.Account{
-		Name: "Bob",
+	id, err := strconv.Atoi(c.Param("id"))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
-	c.JSON(200, res)
+
+	res, err := h.AccountService.GetAccount(id)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	c.JSON(http.StatusOK, res)
 }
 
 func (h *Handler) CreateAccount(c *gin.Context) {
-	c.String(204, "Success")
+	var account api.Account
+	err := c.ShouldBindJSON(&account)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+
+	err = h.AccountService.CreateAccount(&account)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	c.JSON(http.StatusCreated, gin.H{})
 }
 
 func (h *Handler) DeleteAccount(c *gin.Context) {
-	c.JSON(204, "Success")
+	id, err := strconv.Atoi(c.Param("id"))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+
+	err = h.AccountService.DeleteAccount(id)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	c.JSON(http.StatusNoContent, gin.H{})
 }
 
+/* TODO
 func (h *Handler) ListTeams(c *gin.Context) {
 	c.String(200, "Success")
 }
@@ -82,3 +129,4 @@ func (h *Handler) CreateTeam(c *gin.Context) {
 func (h *Handler) DeleteTeam(c *gin.Context) {
 	c.JSON(204, "Success")
 }
+*/

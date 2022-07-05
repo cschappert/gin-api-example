@@ -1,4 +1,4 @@
-// Copyright 2021 Chris Schappert
+// Copyright 2022 Chris Schappert
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,30 +15,78 @@
 package mysql
 
 import (
-	"database/sql"
-
 	api "github.com/cschappert/gin-api-example/pkg"
 	_ "github.com/go-sql-driver/mysql"
+	"gorm.io/gorm"
 )
 
 // AccountService represents a MySql implementation of api.AccountService.
 type AccountService struct {
-	DB *sql.DB
+	DB *gorm.DB
+}
+
+// Maintain an Account model just for use with the DB to prevent coupling between the service layer
+// and the infra layer. mysql.Account (the DB table model) can be converted to an
+// api.Account (the business object) using its toEntity method.
+type Account struct {
+	gorm.Model
+
+	Id    int
+	Name  string
+	Email string
 }
 
 func (s *AccountService) GetAccount(id int) (*api.Account, error) {
-	// TODO: query DB, convert result to api.Account and return
-	return &api.Account{}, nil
+	var account Account
+	result := s.DB.First(&account, id)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return account.toEntity(), nil
 }
 
 func (s *AccountService) ListAccounts() ([]*api.Account, error) {
-	return []*api.Account{}, nil
+	var accounts []Account
+	result := s.DB.Find(&accounts)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	results := make([]*api.Account, 0, len(accounts))
+
+	for _, v := range accounts {
+		results = append(results, v.toEntity())
+	}
+
+	return results, nil
 }
 
 func (s *AccountService) CreateAccount(a *api.Account) error {
-	return nil
+	account := Account{
+		Name:  a.Name,
+		Email: a.Email,
+	}
+
+	result := s.DB.Create(&account)
+
+	return result.Error
 }
 
 func (s *AccountService) DeleteAccount(id int) error {
-	return nil
+	result := s.DB.Delete(&Account{}, id)
+	return result.Error
+}
+
+// Transforms a mysql.Account DB table model to an api.Account business object
+func (a *Account) toEntity() *api.Account {
+	account := api.Account{
+		Id:    a.Id,
+		Name:  a.Name,
+		Email: a.Email,
+	}
+
+	return &account
 }
