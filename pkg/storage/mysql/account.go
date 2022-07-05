@@ -15,6 +15,9 @@
 package mysql
 
 import (
+	"database/sql"
+	"time"
+
 	api "github.com/cschappert/gin-api-example/pkg"
 	"gorm.io/gorm"
 )
@@ -28,9 +31,22 @@ type AccountService struct {
 // and the infra layer. mysql.Account (the DB table model) can be converted to an
 // api.Account (the business object) using its toEntity method.
 type Account struct {
-	ID    int
-	Name  string
-	Email string
+	// By default, GORM expects the primary key to be named 'id' in the table and 'ID' in the struct
+	ID        uint
+	Name      string
+	Email     string
+	TeamID    sql.NullInt64
+	Team      Team
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
+type Team struct {
+	ID        uint
+	Name      string
+	Email     string
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 func (s *AccountService) GetAccount(id int) (*api.Account, error) {
@@ -80,7 +96,7 @@ func (s *AccountService) DeleteAccount(id int) error {
 // Transforms a mysql.Account DB table model to an api.Account business object
 func (a *Account) toEntity() *api.Account {
 	account := api.Account{
-		Id:    a.ID,
+		Id:    int(a.ID),
 		Name:  a.Name,
 		Email: a.Email,
 	}
