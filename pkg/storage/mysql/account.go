@@ -29,9 +29,7 @@ type AccountService struct {
 // and the infra layer. mysql.Account (the DB table model) can be converted to an
 // api.Account (the business object) using its toEntity method.
 type Account struct {
-	gorm.Model
-
-	Id    int
+	ID    int
 	Name  string
 	Email string
 }
@@ -83,7 +81,7 @@ func (s *AccountService) DeleteAccount(id int) error {
 // Transforms a mysql.Account DB table model to an api.Account business object
 func (a *Account) toEntity() *api.Account {
 	account := api.Account{
-		Id:    a.Id,
+		Id:    a.ID,
 		Name:  a.Name,
 		Email: a.Email,
 	}
