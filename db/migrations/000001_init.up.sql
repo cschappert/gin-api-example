@@ -3,7 +3,8 @@
     name varchar(255),
     created_at datetime,
     updated_at datetime,
-    PRIMARY KEY (id));
+    PRIMARY KEY (id))
+    ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE accounts(
     id int(11) NOT NULL AUTO_INCREMENT,
@@ -13,5 +14,6 @@ CREATE TABLE accounts(
     updated_at datetime,
     team_id int(11),
     PRIMARY KEY (id),
-    CONSTRAINT fk_team_account FOREIGN KEY (team_id) REFERENCES teams(id));
+    CONSTRAINT fk_team_account FOREIGN KEY (team_id) REFERENCES teams(id))
+    ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

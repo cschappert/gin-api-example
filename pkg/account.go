@@ -15,9 +15,11 @@
 package api
 
 type Account struct {
-	Id    int    `json:"id"`
-	Name  string `json:"name"`
-	Email string `json:"email"`
+	Id       int    `json:"id"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	TeamID   int    `json:"team_id"`
+	TeamName string `json:"team_name"`
 }
 
 type AccountService interface {

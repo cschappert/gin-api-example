@@ -18,3 +18,7 @@ db-drop:
 # Run the application
 run:
 	go run cmd/api/main.go
+
+# Insert some data for testing into the db
+seed:
+	go run cmd/seed/main.go

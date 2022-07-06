@@ -15,7 +15,6 @@
 package mysql
 
 import (
-	"database/sql"
 	"time"
 
 	api "github.com/cschappert/gin-api-example/pkg"
@@ -32,26 +31,26 @@ type AccountService struct {
 // api.Account (the business object) using its toEntity method.
 type Account struct {
 	// By default, GORM expects the primary key to be named 'id' in the table and 'ID' in the struct
-	ID        uint
+	ID        int
 	Name      string
 	Email     string
-	TeamID    sql.NullInt64
-	Team      Team
-	CreatedAt time.Time
+	CreatedAt time.Time // by default, GORM understands CreatedAt to correspond to DB column created_at
 	UpdatedAt time.Time
+	TeamID    int  // GORM understands TeamID to be an FK to Team.ID
+	Team      Team // related data is held in this embedded struct
 }
 
 type Team struct {
-	ID        uint
+	ID        int
 	Name      string
-	Email     string
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
 func (s *AccountService) GetAccount(id int) (*api.Account, error) {
 	var account Account
-	result := s.DB.First(&account, id)
+
+	result := s.DB.Preload("Team").First(&account, id)
 
 	if result.Error != nil {
 		return nil, result.Error
@@ -62,7 +61,8 @@ func (s *AccountService) GetAccount(id int) (*api.Account, error) {
 
 func (s *AccountService) ListAccounts() ([]*api.Account, error) {
 	var accounts []Account
-	result := s.DB.Find(&accounts)
+
+	result := s.DB.Preload("Team").Find(&accounts)
 
 	if result.Error != nil {
 		return nil, result.Error
@@ -96,9 +96,11 @@ func (s *AccountService) DeleteAccount(id int) error {
 // Transforms a mysql.Account DB table model to an api.Account business object
 func (a *Account) toEntity() *api.Account {
 	account := api.Account{
-		Id:    int(a.ID),
-		Name:  a.Name,
-		Email: a.Email,
+		Id:       a.ID,
+		Name:     a.Name,
+		Email:    a.Email,
+		TeamID:   a.Team.ID,
+		TeamName: a.Team.Name,
 	}
 
 	return &account
