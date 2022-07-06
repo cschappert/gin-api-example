@@ -40,7 +40,7 @@ type Account struct {
 	Email     string
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	TeamID    int
+	TeamID    *int
 
 	// related data is held in this embedded struct
 	Team Team
@@ -84,9 +84,17 @@ func (s *AccountService) ListAccounts() ([]*api.Account, error) {
 }
 
 func (s *AccountService) CreateAccount(a *api.Account) error {
+
+	var teamId *int = nil
+
+	if a.TeamID > 0 {
+		teamId = &a.TeamID
+	}
+
 	account := Account{
-		Name:  a.Name,
-		Email: a.Email,
+		Name:   a.Name,
+		Email:  a.Email,
+		TeamID: teamId,
 	}
 
 	result := s.DB.Create(&account)
