@@ -83,92 +83,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Account"
-      responses:
-        "204":
-          $ref: "#/components/responses/NoContentSuccess"
-        "400":
-          $ref: "#/components/responses/BadRequestError"
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-        "403":
-          $ref: "#/components/responses/ForbiddenError"
-        "404":
-          $ref: "#/components/responses/NotFoundError"
-        default:
-          $ref: "#/components/responses/UnexpectedError"
-  /teams/{teamId}:
-    get:
-      summary: Returns a team by Id.
-      operationId: getTeam
-      parameters:
-        - $ref: "#/components/parameters/TeamId"
-      responses:
-        "200":
-          description: A team object.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Team"
-        "400":
-          $ref: "#/components/responses/BadRequestError"
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-        "403":
-          $ref: "#/components/responses/ForbiddenError"
-        "404":
-          $ref: "#/components/responses/NotFoundError"
-        default:
-          $ref: "#/components/responses/UnexpectedError"
-    delete:
-      summary: Deletes a team by Id.
-      operationId: deleteTeam
-      parameters:
-        - $ref: "#/components/parameters/TeamId"
-      responses:
-        "204":
-          $ref: "#/components/responses/NoContentSuccess"
-        "400":
-          $ref: "#/components/responses/BadRequestError"
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-        "403":
-          $ref: "#/components/responses/ForbiddenError"
-        "404":
-          $ref: "#/components/responses/NotFoundError"
-        default:
-          $ref: "#/components/responses/UnexpectedError"
-  /teams:
-    get:
-      summary: Returns a list of teams.
-      operationId: listTeams
-      responses:
-        "200":
-          description: A list of team objects.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Team"
-        "400":
-          $ref: "#/components/responses/BadRequestError"
-        "401":
-          $ref: "#/components/responses/UnauthorizedError"
-        "403":
-          $ref: "#/components/responses/ForbiddenError"
-        "404":
-          $ref: "#/components/responses/NotFoundError"
-        default:
-          description: Unexpected error
-    post:
-      summary: Create a team.
-      operationId: createTeam
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Team"
+              $ref: "#/components/schemas/CreateAccountRequestBody"
       responses:
         "204":
           $ref: "#/components/responses/NoContentSuccess"
@@ -196,23 +111,32 @@ components:
         email:
           type: string
           example: alice@example.com
+        team_id:
+          type: integer
+          example: 1
+        team_name:
+          type: string
+          example: team-1
       required:
         - name
         - email
-    Team:
+    CreateAccountRequestBody:
       properties:
         id:
           type: integer
           example: 4
         name:
           type: string
-          example: The Jets
-        owner_email:
+          example: Alice Smith
+        email:
           type: string
-          example: ceo@example.com
+          example: alice@example.com
+        team_id:
+          type: integer
+          example: 1
       required:
         - name
-        - owner_email
+        - email
 
   parameters:
     AccountId:
@@ -220,14 +144,6 @@ components:
       in: path
       required: true
       description: The ID of the account.
-      schema:
-        type: integer
-        minimum: 1
-    TeamId:
-      name: teamId
-      in: path
-      required: true
-      description: The ID of the team.
       schema:
         type: integer
         minimum: 1

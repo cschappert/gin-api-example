@@ -21,7 +21,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// AccountService represents a MySql implementation of api.AccountService.
+// AccountService represents a MySQL implementation of api.AccountService.
 type AccountService struct {
 	DB *gorm.DB
 }
@@ -30,14 +30,20 @@ type AccountService struct {
 // and the infra layer. mysql.Account (the DB table model) can be converted to an
 // api.Account (the business object) using its toEntity method.
 type Account struct {
-	// By default, GORM expects the primary key to be named 'id' in the table and 'ID' in the struct
+	// Some notes on GORM conventions:
+	// 1. struct name Account corresponds to table name accounts. PetOwner corresponds to pet_owners
+	// 2. struct field ID corresponds to table column id and is understood to be the primary key
+	// 3. struct fields are CamelCase and table columns are snake_case. CreatedAt == created_at
+	// 4. TeamID is understood to refer to struct field Team.ID, or table column teams.id and is a foreign key.
 	ID        int
 	Name      string
 	Email     string
-	CreatedAt time.Time // by default, GORM understands CreatedAt to correspond to DB column created_at
+	CreatedAt time.Time
 	UpdatedAt time.Time
-	TeamID    int  // GORM understands TeamID to be an FK to Team.ID
-	Team      Team // related data is held in this embedded struct
+	TeamID    int
+
+	// related data is held in this embedded struct
+	Team Team
 }
 
 type Team struct {

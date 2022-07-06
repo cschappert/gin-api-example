@@ -35,19 +35,9 @@ func NewHandler(g *gin.Engine, as api.AccountService) {
 	{
 		accounts.GET("", h.ListAccounts)
 		accounts.GET("/:id", h.GetAccount)
-		accounts.PUT("", h.CreateAccount)
+		accounts.POST("", h.CreateAccount)
 		accounts.DELETE("/:id", h.DeleteAccount)
 	}
-
-	/* TODO
-	teams := v1.Group("/teams")
-	{
-		teams.GET("", h.ListTeams)
-		teams.GET("/:id", h.GetTeam)
-		teams.PUT("", h.CreateTeam)
-		teams.DELETE("", h.DeleteTeam)
-	}
-	*/
 }
 
 func (h *Handler) ListAccounts(c *gin.Context) {
@@ -90,7 +80,7 @@ func (h *Handler) CreateAccount(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 
-	c.JSON(http.StatusCreated, gin.H{})
+	c.JSON(http.StatusNoContent, gin.H{})
 }
 
 func (h *Handler) DeleteAccount(c *gin.Context) {
@@ -108,25 +98,3 @@ func (h *Handler) DeleteAccount(c *gin.Context) {
 
 	c.JSON(http.StatusNoContent, gin.H{})
 }
-
-/* TODO
-func (h *Handler) ListTeams(c *gin.Context) {
-	c.String(200, "Success")
-}
-
-func (h *Handler) GetTeam(c *gin.Context) {
-	res := api.Team{
-		Name:       "Bob",
-		OwnerEmail: "bob@example.com",
-	}
-	c.JSON(200, res)
-}
-
-func (h *Handler) CreateTeam(c *gin.Context) {
-	c.String(204, "Success")
-}
-
-func (h *Handler) DeleteTeam(c *gin.Context) {
-	c.JSON(204, "Success")
-}
-*/

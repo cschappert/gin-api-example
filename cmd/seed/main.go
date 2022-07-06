@@ -19,7 +19,15 @@ func main() {
 		Name:  "Bob",
 		Email: "bob@example.com",
 		Team: mysql.Team{
-			Name: "team",
+			Name: "team1",
+		},
+	})
+
+	db.Create(&mysql.Account{
+		Name:  "Alice",
+		Email: "alice@example.com",
+		Team: mysql.Team{
+			Name: "team2",
 		},
 	})
 

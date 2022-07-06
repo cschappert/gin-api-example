@@ -23,11 +23,11 @@ import (
 func main() {
 	db := mysql.Open()
 
-	// create a mysql implementation of the AccountService (a mock could be used here instead if unit-testing)
+	// Create a mysql implementation of the AccountService (a mock could be used here instead if unit testing)
 	as := &mysql.AccountService{DB: db}
 	r := gin.Default()
 
-	// pass the mysql implementation of the AccountService to the handler
+	// Pass the mysql implementation of the AccountService to the handler
 	http.NewHandler(r, as)
 
 	_ = r.Run()
