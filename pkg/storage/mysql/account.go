@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package mysql
+package storage
 
 import (
 	"time"
@@ -21,13 +21,17 @@ import (
 	"gorm.io/gorm"
 )
 
-// AccountService represents a MySQL implementation of api.AccountService.
-type AccountService struct {
-	DB *gorm.DB
+// storage.AccountRepository represents a MySQL implementation of api.AccountRepository.
+type AccountRepository struct {
+	db *gorm.DB
+}
+
+func NewAccountRepository(db *gorm.DB) AccountRepository {
+	return AccountRepository{db: db}
 }
 
 // Maintain an Account model just for use with the DB to prevent coupling between the service layer
-// and the infra layer. mysql.Account (the DB table model) can be converted to an
+// and the storage layer. storage.Account (the DB table model) can be converted to an
 // api.Account (the business object) using its toEntity method.
 type Account struct {
 	// Some notes on GORM conventions:
@@ -53,10 +57,10 @@ type Team struct {
 	UpdatedAt time.Time
 }
 
-func (s *AccountService) GetAccount(id int) (*api.Account, error) {
+func (s *AccountRepository) GetAccount(id int) (*api.Account, error) {
 	var account Account
 
-	result := s.DB.Preload("Team").First(&account, id)
+	result := s.db.Preload("Team").First(&account, id)
 
 	if result.Error != nil {
 		return nil, result.Error
@@ -65,10 +69,10 @@ func (s *AccountService) GetAccount(id int) (*api.Account, error) {
 	return account.toEntity(), nil
 }
 
-func (s *AccountService) ListAccounts() ([]*api.Account, error) {
+func (s *AccountRepository) ListAccounts() ([]*api.Account, error) {
 	var accounts []Account
 
-	result := s.DB.Preload("Team").Find(&accounts)
+	result := s.db.Preload("Team").Find(&accounts)
 
 	if result.Error != nil {
 		return nil, result.Error
@@ -83,7 +87,7 @@ func (s *AccountService) ListAccounts() ([]*api.Account, error) {
 	return results, nil
 }
 
-func (s *AccountService) CreateAccount(a *api.Account) error {
+func (s *AccountRepository) CreateAccount(a *api.Account) error {
 
 	var teamId *int = nil
 
@@ -97,17 +101,17 @@ func (s *AccountService) CreateAccount(a *api.Account) error {
 		TeamID: teamId,
 	}
 
-	result := s.DB.Create(&account)
+	result := s.db.Create(&account)
 
 	return result.Error
 }
 
-func (s *AccountService) DeleteAccount(id int) error {
-	result := s.DB.Delete(&Account{}, id)
+func (s *AccountRepository) DeleteAccount(id int) error {
+	result := s.db.Delete(&Account{}, id)
 	return result.Error
 }
 
-// Transforms a mysql.Account DB table model to an api.Account business object
+// Transforms a storage.Account DB table model to an api.Account business object
 func (a *Account) toEntity() *api.Account {
 	account := api.Account{
 		Id:       a.ID,

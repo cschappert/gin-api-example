@@ -53,6 +53,29 @@ paths:
         default:
           $ref: "#/components/responses/UnexpectedError"
 
+  /accounts/{accountId}/uppercase:
+    get:
+      summary: Returns an account by Id with all fields in uppercase.
+      operationId: getAccountUppercase
+      parameters:
+        - $ref: "#/components/parameters/AccountId"
+      responses:
+        "200":
+          description: An account object with all fields in uppercase.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountUppercase"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
   /accounts:
     get:
       summary: Returns a list of accounts.
@@ -117,6 +140,26 @@ components:
         team_name:
           type: string
           example: team-1
+      required:
+        - name
+        - email
+    AccountUppercase:
+      properties:
+        id:
+          type: integer
+          example: 4
+        name:
+          type: string
+          example: ALICE SMITH
+        email:
+          type: string
+          example: ALICE@EXAMPLE.COM
+        team_id:
+          type: integer
+          example: 1
+        team_name:
+          type: string
+          example: TEAM-1
       required:
         - name
         - email

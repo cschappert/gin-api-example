@@ -15,16 +15,23 @@
 package main
 
 import (
+	api "github.com/cschappert/gin-api-example/pkg"
 	"github.com/cschappert/gin-api-example/pkg/http"
-	"github.com/cschappert/gin-api-example/pkg/storage/mysql"
+	storage "github.com/cschappert/gin-api-example/pkg/storage/mysql"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	db := mysql.Open()
+	// get the DB
+	db := storage.Open()
 
-	// Create a mysql implementation of the AccountService (a mock could be used here instead if unit testing)
-	as := &mysql.AccountService{DB: db}
+	// create a new storage.AccountRepository, passing in the DB
+	ar := storage.NewAccountRepository(db)
+
+	// Note: api.NewAccountService takes an api.AccountRepository, which is an interface.
+	// When passing an implementation (in this case, storage.AccountRepository) we have to pass a *pointer*
+	// to the implementation.
+	as := api.NewAccountService(&ar)
 	r := gin.Default()
 
 	// Pass the mysql implementation of the AccountService to the handler

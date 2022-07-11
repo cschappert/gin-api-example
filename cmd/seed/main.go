@@ -17,30 +17,30 @@ package main
 import (
 	"log"
 
-	"github.com/cschappert/gin-api-example/pkg/storage/mysql"
-	mysqlgorm "gorm.io/driver/mysql"
+	storage "github.com/cschappert/gin-api-example/pkg/storage/mysql"
+	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 func main() {
 	dsn := "root:pw@tcp(127.0.0.1:3306)/db?charset=utf8mb4&parseTime=True&loc=UTC"
-	db, err := gorm.Open(mysqlgorm.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("failed to connect to database: ", err)
 	}
 
-	db.Create(&mysql.Account{
+	db.Create(&storage.Account{
 		Name:  "Bob",
 		Email: "bob@example.com",
-		Team: mysql.Team{
+		Team: storage.Team{
 			Name: "team1",
 		},
 	})
 
-	db.Create(&mysql.Account{
+	db.Create(&storage.Account{
 		Name:  "Alice",
 		Email: "alice@example.com",
-		Team: mysql.Team{
+		Team: storage.Team{
 			Name: "team2",
 		},
 	})

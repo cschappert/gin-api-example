@@ -35,6 +35,7 @@ func NewHandler(g *gin.Engine, as api.AccountService) {
 	{
 		accounts.GET("", h.ListAccounts)
 		accounts.GET("/:id", h.GetAccount)
+		accounts.GET("/:id/uppercase", h.GetAccountUppercase)
 		accounts.POST("", h.CreateAccount)
 		accounts.DELETE("/:id", h.DeleteAccount)
 	}
@@ -58,6 +59,22 @@ func (h *Handler) GetAccount(c *gin.Context) {
 	}
 
 	res, err := h.AccountService.GetAccount(id)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	c.JSON(http.StatusOK, res)
+}
+
+func (h *Handler) GetAccountUppercase(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+
+	res, err := h.AccountService.GetAccountUppercase(id)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
