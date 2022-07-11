@@ -12,7 +12,7 @@ I've borrowed heavily from [@benbjohnson/standard-package-layout](https://medium
 
 * [golang-migrate](https://github.com/golang-migrate/migrate) 
   * `brew install golang-migrate`
-* To enable mock generation
+* Mocks are generated with [mockery](https://github.com/vektra/mockery)
   * `brew install mockery`
 
 # Try It Out
@@ -25,3 +25,18 @@ $ make run
 ```
 
 * API docs are available at http://localhost:8081
+
+# Run Unit Tests
+
+```
+$ make unit-test
+```
+
+# Generate Mocks
+
+* For example, after adding a method to a repository interface
+
+```
+$ make mocks
+```
+
