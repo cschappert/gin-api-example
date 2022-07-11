@@ -34,7 +34,7 @@ func main() {
 	as := api.NewAccountService(&ar)
 	r := gin.Default()
 
-	// Pass the mysql implementation of the AccountService to the handler
+	// Pass the AccountService to the handler
 	http.NewHandler(r, as)
 
 	_ = r.Run()
