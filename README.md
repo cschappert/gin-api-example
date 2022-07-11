@@ -12,6 +12,8 @@ I've borrowed heavily from [@benbjohnson/standard-package-layout](https://medium
 
 * [golang-migrate](https://github.com/golang-migrate/migrate) 
   * `brew install golang-migrate`
+* To enable mock generation
+  * `brew install mockery`
 
 # Try It Out
 
