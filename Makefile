@@ -19,6 +19,15 @@ db-drop:
 run:
 	go run cmd/api/main.go
 
+# Run the tests
+unit-test:
+	go test ./...
+
 # Insert some data for testing into the db
 seed:
 	go run cmd/seed/main.go
+
+# Regenerate mocks for use in unit testing
+.PHONY: mocks
+mocks:
+	mockery --all
